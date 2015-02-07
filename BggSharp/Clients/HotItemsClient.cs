@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BggSharp.Helpers;
+using BggSharp.Helpers.MapperExtensions;
 using BggSharp.Http;
 using BggSharp.Models;
+using BggSharp.Models.HttpResponse.HotItems;
 
 namespace BggSharp.Clients
 {
@@ -13,35 +14,12 @@ namespace BggSharp.Clients
             base(connection)
         { }
 
-        public Task<object> Get(HotItemType type)
+        public Task<List<HotItem>> Get(HotItemType type)
         {
-            return ApiConnection.Get<object>(ApiUrls.HotItems,
-                new[] {new KeyValuePair<string, string>("type", ConvertToApiParam(type))});
+            return ApiConnection.Get<HotItemsResponse>(ApiUrls.HotItems,
+                new[] { new KeyValuePair<string, string>("type", type.ToApiValue()) })
+                .ContinueWith(t => t.Result.ToModel());
         }
 
-        private static string ConvertToApiParam(HotItemType type)
-        {
-            switch (type)
-            {
-                case HotItemType.Boardgame:
-                    return "boardgame";
-                case HotItemType.Rpg:
-                    return "rpg";
-                case HotItemType.Videogame:
-                    return "videogame";
-                case HotItemType.BoardgamePerson:
-                    return "boardgameperson";
-                case HotItemType.RpgPerson:
-                    return "rpgperson";
-                case HotItemType.BoardgameCompany:
-                    return "boardgamecompany";
-                case HotItemType.RpgCompany:
-                    return "rpgcompany";
-                case HotItemType.VideogameCompany:
-                    return "videogamecompany";
-                default:
-                    throw new ArgumentOutOfRangeException("type");
-            }
-        }
     }
 }
