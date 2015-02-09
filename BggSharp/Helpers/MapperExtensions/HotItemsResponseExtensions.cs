@@ -16,7 +16,7 @@ namespace BggSharp.Helpers.MapperExtensions
                 Name = item.Name.Value,
                 Rank = item.Rank,
                 ThumbnailUrl = ConvertThumbnailValueToUri(item.Thumbnail.Value),
-                YearPublished = item.YearPublished.Value
+                YearPublished = item.YearPublished.Value // TODO: Don't assume there is a year published!
             }).ToList();
         }
 

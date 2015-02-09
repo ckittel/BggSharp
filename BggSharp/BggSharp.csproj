@@ -47,6 +47,7 @@
     <Compile Include="BggSharpClient.cs" />
     <Compile Include="Clients\ClientBase.cs" />
     <Compile Include="Clients\HotItemsClient.cs" />
+    <Compile Include="Clients\PlaysClient.cs" />
     <Compile Include="Helpers\MapperExtensions\HotItemsResponseExtensions.cs" />
     <Compile Include="Helpers\HotItemTypeExtensions.cs" />
     <Compile Include="Models\HotItem.cs" />
@@ -59,6 +60,13 @@
     <Compile Include="Models\HttpResponse\HotItems\Name.cs" />
     <Compile Include="Models\HttpResponse\HotItems\Thumbnail.cs" />
     <Compile Include="Models\HttpResponse\HotItems\YearPublished.cs" />
+    <Compile Include="Models\HttpResponse\Plays\Item.cs" />
+    <Compile Include="Models\HttpResponse\Plays\ItemSubtype.cs" />
+    <Compile Include="Models\HttpResponse\Plays\ItemSubtypes.cs" />
+    <Compile Include="Models\HttpResponse\Plays\Play.cs" />
+    <Compile Include="Models\HttpResponse\Plays\Player.cs" />
+    <Compile Include="Models\HttpResponse\Plays\PlayPlayers.cs" />
+    <Compile Include="Models\HttpResponse\Plays\PlaysResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
