@@ -20,6 +20,5 @@ namespace BggSharp.Clients
                 new[] { new KeyValuePair<string, string>("type", type.ToApiValue()) })
                 .ContinueWith(t => t.Result.ToModel());
         }
-
     }
 }
