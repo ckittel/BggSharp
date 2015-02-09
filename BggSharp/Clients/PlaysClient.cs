@@ -18,10 +18,10 @@ namespace BggSharp.Clients
         // TODO: Figure out better way to expose paging to user
         // TODO: ...
         // TODO: Profit?
-        public Task<PlaysResponse> Get(string username, int itemId, string type, DateTime startDate, DateTime endDate, string subtype, int page)
-        {
-            return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, type, startDate, endDate, subtype, page));
-        }
+        //public Task<PlaysResponse> Get(string username, int itemId, string type, DateTime startDate, DateTime endDate, string subtype, int page)
+        //{
+        //    return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, type, startDate, endDate, subtype, page));
+        //}
 
         private static IEnumerable<KeyValuePair<string, string>> BuildParams(string username, int itemId, string type, DateTime startDate, DateTime endDate, string subtype, int page)
         {
