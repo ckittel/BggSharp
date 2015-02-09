@@ -16,7 +16,7 @@ namespace BggSharp.Helpers.MapperExtensions
                 Name = item.Name.Value,
                 Rank = item.Rank,
                 ThumbnailUrl = ConvertThumbnailValueToUri(item.Thumbnail.Value),
-                YearPublished = item.YearPublished.Value
+                YearPublished = (item.YearPublished != null) ? item.YearPublished.Value : string.Empty // At this time, only boardgame and rpg provide this value
             }).ToList();
         }
 
@@ -24,6 +24,8 @@ namespace BggSharp.Helpers.MapperExtensions
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
 
+            // for some reason the URLs don't start with http://, they start with only //
+            // TODO: does HTTPS work here?  Should we expose this as an option, or just force HTTPS (or continue to force HTTP)?
             if (value.StartsWith("//"))
             {
                 value = "http:" + value;

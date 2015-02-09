@@ -6,11 +6,11 @@ namespace BggSharpTestHarness
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var x = new BggSharpClient();
 
-            var result = x.HotItems.Get(HotItemType.Boardgame).Result;
+            var result = x.HotItems.Get(HotItemType.Videogame).Result;
 
             Console.ReadLine();
         }
