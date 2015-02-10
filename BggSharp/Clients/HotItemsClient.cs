@@ -17,8 +17,8 @@ namespace BggSharp.Clients
         public Task<List<HotItem>> Get(HotItemType type)
         {
             return ApiConnection.Get<HotItemsResponse>(ApiUrls.HotItems,
-                new[] { new KeyValuePair<string, string>("type", type.ToApiValue()) })
-                .ContinueWith(t => t.Result.ToModel());
+                    new Dictionary<string, string> {{"type", type.ToApiValue()}})
+                    .ContinueWith(t => t.Result.ToModel());
         }
     }
 }

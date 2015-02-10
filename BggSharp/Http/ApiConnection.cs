@@ -31,16 +31,10 @@ namespace BggSharp.Http
             return Get<T>(relativeUri, null);
         }
 
-        public Task<T> Get<T>(Uri relativeUri, IEnumerable<KeyValuePair<string, string>> requestParams) where T : new()
+        public Task<T> Get<T>(Uri relativeUri, IDictionary<string, string> requestParams) where T : new()
         {
             var request = new RestRequest(relativeUri, Method.GET);
-            if (requestParams != null)
-            {
-                foreach (var param in requestParams)
-                {
-                    request.AddQueryParameter(param.Key, param.Value);
-                }
-            }
+            request.AddQueryParameters(requestParams);
 
             return RestClient.GetTaskAsync<T>(request);
         }
