@@ -50,6 +50,8 @@
     <Compile Include="Clients\PlaysClient.cs" />
     <Compile Include="Helpers\MapperExtensions\HotItemsResponseExtensions.cs" />
     <Compile Include="Helpers\HotItemTypeExtensions.cs" />
+    <Compile Include="Helpers\PlaySubtypeExtensions.cs" />
+    <Compile Include="Helpers\PlayTypeExtensions.cs" />
     <Compile Include="Helpers\RestRequestExtensions.cs" />
     <Compile Include="Models\HotItem.cs" />
     <Compile Include="Models\HotItemType.cs" />
@@ -68,6 +70,8 @@
     <Compile Include="Models\HttpResponse\Plays\Player.cs" />
     <Compile Include="Models\HttpResponse\Plays\PlayPlayers.cs" />
     <Compile Include="Models\HttpResponse\Plays\PlaysResponse.cs" />
+    <Compile Include="Models\PlaySubtype.cs" />
+    <Compile Include="Models\PlayType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

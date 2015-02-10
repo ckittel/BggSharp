@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BggSharp.Helpers;
 using BggSharp.Http;
+using BggSharp.Models;
 using BggSharp.Models.HttpResponse.Plays;
 
 namespace BggSharp.Clients
@@ -26,7 +27,7 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(string username, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(username, null, null, startDate, endDate, null, page);
+            return Get(username, null, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(string username, int itemId, int page)
@@ -36,7 +37,7 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(username, itemId, null, startDate, endDate, null, page);
+            return Get(username, (int?) itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(int itemId, int page)
@@ -46,22 +47,20 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(null, itemId, null, startDate, endDate, null, page);
+            return Get(null, (int?) itemId, startDate, endDate, null, null, page);
         }
 
-        // TODO: Convert type/subtype to enum values
-        public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, string type, string subtype, int page)
+        public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
-            return Get(username, itemId, type, startDate, endDate, subtype, page);
+            return Get(username, (int?) itemId, startDate, endDate, type, subtype, page);
         }
 
-        // TODO: Convert type/subtype to enum values
-        private Task<PlaysResponse> Get(string username, int? itemId, string type, DateTime? startDate, DateTime? endDate, string subtype, int page)
+        private Task<PlaysResponse> Get(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
             return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, startDate, endDate, type, subtype, page));
         }
 
-        private static Dictionary<string, string> BuildParams(string username, int? itemId, DateTime? startDate, DateTime? endDate, string type, string subtype, int page)
+        private static Dictionary<string, string> BuildParams(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
             var result = new Dictionary<string, string>();
 
@@ -85,16 +84,14 @@ namespace BggSharp.Clients
                 result.Add("mindate", endDate.Value.ToString("yyyy-MM-dd"));
             }
 
-            // TODO: Convert to enum value
-            if (!string.IsNullOrWhiteSpace(type))
+            if (type.HasValue)
             {
-                result.Add("type", type);
+                result.Add("type", type.Value.ToApiValue());
             }
 
-            // TODO: Convert to enum value
-            if (!string.IsNullOrWhiteSpace(subtype))
+            if (subtype.HasValue)
             {
-                result.Add("subtype", subtype);
+                result.Add("subtype", subtype.Value.ToApiValue());
             }
 
             if (page > 1)
