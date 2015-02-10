@@ -18,31 +18,31 @@ namespace BggSharp.Clients
         // TODO: Figure out better way to expose paging to user
         // TODO: ...
         // TODO: Profit?
-        //public Task<PlaysResponse> Get(string username, int itemId, string type, DateTime startDate, DateTime endDate, string subtype, int page)
-        //{
-        //    return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, type, startDate, endDate, subtype, page));
-        //}
+        public Task<PlaysResponse> Get(string username, int itemId, string type, DateTime startDate, DateTime endDate, string subtype, int page)
+        {
+            return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, type, startDate, endDate, subtype, page));
+        }
 
         private static IEnumerable<KeyValuePair<string, string>> BuildParams(string username, int itemId, string type, DateTime startDate, DateTime endDate, string subtype, int page)
         {
             // TODO: Only add params based on what is needed
-            var result = new List<KeyValuePair<string, string>>(new[] 
+            var result = new Dictionary<string, string> 
             { 
-                new KeyValuePair<string, string>("id", itemId.ToString())
-                //new KeyValuePair<string, string>("type", type),
-                //new KeyValuePair<string, string>("mindate", startDate.ToString("yyyy-MM-dd")),
-                //new KeyValuePair<string, string>("maxdate", endDate.ToString("yyyy-MM-dd")),
-                //new KeyValuePair<string, string>("subtype", subtype)
-            });
+                {"id", itemId.ToString()},
+                {"type", type},
+                {"mindate", startDate.ToString("yyyy-MM-dd")},
+                {"maxdate", endDate.ToString("yyyy-MM-dd")},
+                {"subtype", subtype}
+            };
 
             if (!string.IsNullOrWhiteSpace(username))
             {
-                result.Add(new KeyValuePair<string, string>("username", username));
+                result.Add("username", username);
             }
 
-            if (page > 0)
+            if (page > 1)
             {
-                result.Add(new KeyValuePair<string, string>("page", page.ToString()));
+                result.Add("page", page.ToString());
             }
 
             return result;

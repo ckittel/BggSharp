@@ -66,6 +66,7 @@
     <Compile Include="Models\HttpResponse\Plays\Play.cs" />
     <Compile Include="Models\HttpResponse\Plays\Player.cs" />
     <Compile Include="Models\HttpResponse\Plays\PlayPlayers.cs" />
+    <Compile Include="Models\HttpResponse\Plays\PlaysResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
