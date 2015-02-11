@@ -10,7 +10,7 @@ namespace BggSharpTestHarness
         {
             var x = new BggSharpClient();
 
-            var result = x.HotItems.Get(HotItemType.Videogame).Result;
+            var result = x.Plays.GetAll(2).Result;
 
             Console.ReadLine();
         }

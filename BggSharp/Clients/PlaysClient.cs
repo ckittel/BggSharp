@@ -21,37 +21,37 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(string username, int page)
         {
-            return Get(username, null, null, null, null, null, page);
+            return GetPage(username, null, null, null, null, null, page);
         }
 
         public Task<PlaysResponse> Get(string username, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(username, null, startDate, endDate, null, null, page);
+            return GetPage(username, null, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(string username, int itemId, int page)
         {
-            return Get(username, itemId, null, null, null, null, page);
+            return GetPage(username, itemId, null, null, null, null, page);
         }
 
         public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(username, (int?)itemId, startDate, endDate, null, null, page);
+            return GetPage(username, (int?)itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(int itemId, int page)
         {
-            return Get(null, itemId, null, null, null, null, page);
+            return GetPage(null, itemId, null, null, null, null, page);
         }
 
         public Task<PlaysResponse> Get(int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(null, (int?)itemId, startDate, endDate, null, null, page);
+            return GetPage(null, (int?)itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
-            return Get(username, (int?)itemId, startDate, endDate, type, subtype, page);
+            return GetPage(username, (int?)itemId, startDate, endDate, type, subtype, page);
         }
 
         public Task<List<PlaysResponse>> GetAll(string username)
@@ -91,22 +91,23 @@ namespace BggSharp.Clients
 
         private Task<List<PlaysResponse>> GetAll(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype)
         {
-            return Get(username, itemId, startDate, endDate, type, subtype, 1)
+            return GetPage(username, itemId, startDate, endDate, type, subtype, 1)
                 .ContinueWith(at =>
                 {
-                    var responses = new List<PlaysResponse> { at.Result };
+                    var playsResponses = new List<PlaysResponse> { at.Result };
 
+                    // Start at page 2 and call as needed (may not need to call anymore)
                     Parallel.For(2, CalculateTotalNumberOfPages(at.Result.Total, at.Result.Plays.Count) + 1, page =>
                     {
-                        responses.Add(Get(username, itemId, startDate, endDate, type, subtype, page).Result);
+                        playsResponses.Add(GetPage(username, itemId, startDate, endDate, type, subtype, page).Result);
                     });
 
                     // be nice and kick them back in page order
-                    return responses.OrderBy(response => response.Page).ToList();
+                    return playsResponses.OrderBy(r => r.Page).ToList();
                 });
         }
 
-        private Task<PlaysResponse> Get(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
+        private Task<PlaysResponse> GetPage(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
             return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, startDate, endDate, type, subtype, page));
         }
