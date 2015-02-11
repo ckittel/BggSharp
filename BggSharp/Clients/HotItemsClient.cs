@@ -8,7 +8,7 @@ using BggSharp.Models.HttpResponse.HotItems;
 
 namespace BggSharp.Clients
 {
-    public class HotItemsClient : ClientBase
+    public class HotItemsClient : ClientBase, IHotItemsClient
     {
         public HotItemsClient(IApiConnection connection) : 
             base(connection)

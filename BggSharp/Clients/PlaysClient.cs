@@ -9,14 +9,13 @@ using BggSharp.Models.HttpResponse.Plays;
 
 namespace BggSharp.Clients
 {
-    public class PlaysClient : ClientBase
+    public class PlaysClient : ClientBase, IPlaysClient
     {
         public PlaysClient(IApiConnection connection) :
             base(connection)
         { }
 
         // TODO: Need to convert to cleaner (non-HttpRepsonse bound) model type
-        // TODO: Figure out better way to expose paging to user
         // TODO: ...
         // TODO: Profit?
 
@@ -37,7 +36,7 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(username, (int?) itemId, startDate, endDate, null, null, page);
+            return Get(username, (int?)itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(int itemId, int page)
@@ -47,17 +46,74 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return Get(null, (int?) itemId, startDate, endDate, null, null, page);
+            return Get(null, (int?)itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
-            return Get(username, (int?) itemId, startDate, endDate, type, subtype, page);
+            return Get(username, (int?)itemId, startDate, endDate, type, subtype, page);
+        }
+
+        public Task<List<PlaysResponse>> GetAll(string username)
+        {
+            return GetAll(username, null, null, null, null, null);
+        }
+
+        public Task<List<PlaysResponse>> GetAll(string username, DateTime startDate, DateTime endDate)
+        {
+            return GetAll(username, null, startDate, endDate, null, null);
+        }
+
+        public Task<List<PlaysResponse>> GetAll(string username, int itemId)
+        {
+            return GetAll(username, itemId, null, null, null, null);
+        }
+
+        public Task<List<PlaysResponse>> GetAll(string username, int itemId, DateTime startDate, DateTime endDate)
+        {
+            return GetAll(username, (int?)itemId, startDate, endDate, null, null);
+        }
+
+        public Task<List<PlaysResponse>> GetAll(int itemId)
+        {
+            return GetAll(null, itemId, null, null, null, null);
+        }
+
+        public Task<List<PlaysResponse>> GetAll(int itemId, DateTime startDate, DateTime endDate)
+        {
+            return GetAll(null, (int?)itemId, startDate, endDate, null, null);
+        }
+
+        public Task<List<PlaysResponse>> GetAll(string username, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype)
+        {
+            return GetAll(username, (int?)itemId, startDate, endDate, type, subtype);
+        }
+
+        private Task<List<PlaysResponse>> GetAll(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype)
+        {
+            return Get(username, itemId, startDate, endDate, type, subtype, 1)
+                .ContinueWith(at =>
+                {
+                    var responses = new List<PlaysResponse> { at.Result };
+
+                    Parallel.For(2, CalculateTotalNumberOfPages(at.Result.Total, at.Result.Plays.Count) + 1, page =>
+                    {
+                        responses.Add(Get(username, itemId, startDate, endDate, type, subtype, page).Result);
+                    });
+
+                    // be nice and kick them back in page order
+                    return responses.OrderBy(response => response.Page).ToList();
+                });
         }
 
         private Task<PlaysResponse> Get(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
             return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, startDate, endDate, type, subtype, page));
+        }
+
+        private static int CalculateTotalNumberOfPages(int totalPlays, int pageSize)
+        {
+            return (int)Math.Ceiling(totalPlays / (decimal)pageSize);
         }
 
         private static Dictionary<string, string> BuildParams(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)

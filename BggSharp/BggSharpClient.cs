@@ -3,7 +3,7 @@ using BggSharp.Http;
 
 namespace BggSharp
 {
-    public class BggSharpClient
+    public class BggSharpClient : IBggSharpClient
     {
         public BggSharpClient()
         {
@@ -12,7 +12,7 @@ namespace BggSharp
             Plays = new PlaysClient(connection);
         }
 
-        public HotItemsClient HotItems { get; private set; }
-        public PlaysClient Plays { get; private set; }
+        public IHotItemsClient HotItems { get; private set; }
+        public IPlaysClient Plays { get; private set; }
     }
 }

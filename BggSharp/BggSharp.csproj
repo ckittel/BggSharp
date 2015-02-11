@@ -47,12 +47,15 @@
     <Compile Include="BggSharpClient.cs" />
     <Compile Include="Clients\ClientBase.cs" />
     <Compile Include="Clients\HotItemsClient.cs" />
+    <Compile Include="Clients\IHotItemsClient.cs" />
+    <Compile Include="Clients\IPlaysClient.cs" />
     <Compile Include="Clients\PlaysClient.cs" />
     <Compile Include="Helpers\MapperExtensions\HotItemsResponseExtensions.cs" />
     <Compile Include="Helpers\HotItemTypeExtensions.cs" />
     <Compile Include="Helpers\PlaySubtypeExtensions.cs" />
     <Compile Include="Helpers\PlayTypeExtensions.cs" />
     <Compile Include="Helpers\RestRequestExtensions.cs" />
+    <Compile Include="IBggSharpClient.cs" />
     <Compile Include="Models\HotItem.cs" />
     <Compile Include="Models\HotItemType.cs" />
     <Compile Include="Helpers\ApiUrls.cs" />
