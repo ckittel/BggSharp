@@ -26,7 +26,7 @@ namespace BggSharp.Helpers.MapperExtensions
 
             // for some reason the URLs don't start with http://, they start with only //
             // TODO: does HTTPS work here?  Should we expose this as an option, or just force HTTPS (or continue to force HTTP)?
-            if (value.StartsWith("//"))
+            if (value.StartsWith("//", StringComparison.OrdinalIgnoreCase))
             {
                 value = "http:" + value;
             }

@@ -14,11 +14,10 @@ namespace BggSharp.Clients
             base(connection)
         { }
 
-        public Task<List<HotItem>> Get(HotItemType type)
+        public async Task<List<HotItem>> Get(HotItemType type)
         {
-            return ApiConnection.Get<HotItemsResponse>(ApiUrls.HotItems,
-                    new Dictionary<string, string> {{"type", type.ToApiValue()}})
-                    .ContinueWith(t => t.Result.ToModel());
+            var result = await ApiConnection.Get<HotItemsResponse>(ApiUrls.HotItems, new Dictionary<string, string> {{"type", type.ToApiValue()}}).ConfigureAwait(false);
+            return result.ToModel();
         }
     }
 }

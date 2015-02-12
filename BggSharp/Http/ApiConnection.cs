@@ -12,10 +12,6 @@ namespace BggSharp.Http
             this(ApiUrls.Base, "BggSharpClient/1.0")
         { }
 
-        public ApiConnection(string userAgent) : 
-            this(ApiUrls.Base, userAgent)
-        { }
-
         public ApiConnection(Uri baseUri, string userAgent)
         {
             RestClient = new RestClient(baseUri)
@@ -31,10 +27,10 @@ namespace BggSharp.Http
             return Get<T>(relativeUri, null);
         }
 
-        public Task<T> Get<T>(Uri relativeUri, IDictionary<string, string> requestParams) where T : new()
+        public Task<T> Get<T>(Uri relativeUri, IDictionary<string, string> requestParameters) where T : new()
         {
             var request = new RestRequest(relativeUri, Method.GET);
-            request.AddQueryParameters(requestParams);
+            request.AddQueryParameters(requestParameters);
 
             return RestClient.GetTaskAsync<T>(request);
         }

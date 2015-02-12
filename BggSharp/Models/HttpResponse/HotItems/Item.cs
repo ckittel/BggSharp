@@ -1,9 +1,9 @@
-using System.Collections.Generic;
 using RestSharp.Deserializers;
 
 namespace BggSharp.Models.HttpResponse.HotItems
 {
-    public class Item
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated by RestSharp")]
+    internal class Item
     {
         public Thumbnail Thumbnail { get; set; }
         public Name Name { get; set; }

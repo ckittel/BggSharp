@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BggSharp.Helpers;
@@ -19,24 +21,24 @@ namespace BggSharp.Clients
         // TODO: ...
         // TODO: Profit?
 
-        public Task<PlaysResponse> Get(string username, int page)
+        public Task<PlaysResponse> Get(string userName, int page)
         {
-            return GetPage(username, null, null, null, null, null, page);
+            return GetPage(userName, null, null, null, null, null, page);
         }
 
-        public Task<PlaysResponse> Get(string username, DateTime startDate, DateTime endDate, int page)
+        public Task<PlaysResponse> Get(string userName, DateTime startDate, DateTime endDate, int page)
         {
-            return GetPage(username, null, startDate, endDate, null, null, page);
+            return GetPage(userName, null, startDate, endDate, null, null, page);
         }
 
-        public Task<PlaysResponse> Get(string username, int itemId, int page)
+        public Task<PlaysResponse> Get(string userName, int itemId, int page)
         {
-            return GetPage(username, itemId, null, null, null, null, page);
+            return GetPage(userName, itemId, null, null, null, null, page);
         }
 
-        public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, int page)
+        public Task<PlaysResponse> Get(string userName, int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return GetPage(username, (int?)itemId, startDate, endDate, null, null, page);
+            return GetPage(userName, (int?)itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(int itemId, int page)
@@ -49,67 +51,65 @@ namespace BggSharp.Clients
             return GetPage(null, (int?)itemId, startDate, endDate, null, null, page);
         }
 
-        public Task<PlaysResponse> Get(string username, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype, int page)
+        public Task<PlaysResponse> Get(string userName, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
-            return GetPage(username, (int?)itemId, startDate, endDate, type, subtype, page);
+            return GetPage(userName, (int?)itemId, startDate, endDate, type, subtype, page);
         }
 
-        public Task<List<PlaysResponse>> GetAll(string username)
+        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName)
         {
-            return GetAll(username, null, null, null, null, null);
+            return GetAll(userName, null, null, null, null, null);
         }
 
-        public Task<List<PlaysResponse>> GetAll(string username, DateTime startDate, DateTime endDate)
+        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, DateTime startDate, DateTime endDate)
         {
-            return GetAll(username, null, startDate, endDate, null, null);
+            return GetAll(userName, null, startDate, endDate, null, null);
         }
 
-        public Task<List<PlaysResponse>> GetAll(string username, int itemId)
+        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int itemId)
         {
-            return GetAll(username, itemId, null, null, null, null);
+            return GetAll(userName, itemId, null, null, null, null);
         }
 
-        public Task<List<PlaysResponse>> GetAll(string username, int itemId, DateTime startDate, DateTime endDate)
+        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int itemId, DateTime startDate, DateTime endDate)
         {
-            return GetAll(username, (int?)itemId, startDate, endDate, null, null);
+            return GetAll(userName, (int?)itemId, startDate, endDate, null, null);
         }
 
-        public Task<List<PlaysResponse>> GetAll(int itemId)
+        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(int itemId)
         {
             return GetAll(null, itemId, null, null, null, null);
         }
 
-        public Task<List<PlaysResponse>> GetAll(int itemId, DateTime startDate, DateTime endDate)
+        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(int itemId, DateTime startDate, DateTime endDate)
         {
             return GetAll(null, (int?)itemId, startDate, endDate, null, null);
         }
 
-        public Task<List<PlaysResponse>> GetAll(string username, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype)
+        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype)
         {
-            return GetAll(username, (int?)itemId, startDate, endDate, type, subtype);
+            return GetAll(userName, (int?)itemId, startDate, endDate, type, subtype);
         }
 
-        private Task<List<PlaysResponse>> GetAll(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype)
+        private async Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype)
         {
-            return GetPage(username, itemId, startDate, endDate, type, subtype, 1)
-                .ContinueWith(at =>
-                {
-                    var playsResponses = new List<PlaysResponse> { at.Result };
+            var result = await GetPage(userName, itemId, startDate, endDate, type, subtype, 1).ConfigureAwait(false);
 
-                    // Start at page 2 and call as needed (may not need to call anymore)
-                    Parallel.For(2, CalculateTotalNumberOfPages(at.Result.Total, at.Result.Plays.Count) + 1, page =>
-                    {
-                        playsResponses.Add(GetPage(username, itemId, startDate, endDate, type, subtype, page).Result);
-                    });
+            var playsResponses = new List<PlaysResponse> { result };
 
-                    // be nice and kick them back in page order
-                    return playsResponses.OrderBy(r => r.Page).ToList();
-                });
+            // Start at page 2 and call as needed (may not need to call anymore)
+            Parallel.For(2, CalculateTotalNumberOfPages(result.Total, result.Plays.Count) + 1, page =>
+            {
+                playsResponses.Add(GetPage(userName, itemId, startDate, endDate, type, subtype, page).Result);
+            });
+
+            // be nice and kick them back in page order
+            return playsResponses.OrderBy(r => r.Page).ToList().AsReadOnly();
         }
 
-        private Task<PlaysResponse> GetPage(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
+        private Task<PlaysResponse> GetPage(string userName, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
-            return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(username, itemId, startDate, endDate, type, subtype, page));
+            return ApiConnection.Get<PlaysResponse>(ApiUrls.Plays, BuildParams(userName, itemId, startDate, endDate, type, subtype, page));
         }
 
         private static int CalculateTotalNumberOfPages(int totalPlays, int pageSize)
@@ -117,7 +117,7 @@ namespace BggSharp.Clients
             return (int)Math.Ceiling(totalPlays / (decimal)pageSize);
         }
 
-        private static Dictionary<string, string> BuildParams(string username, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
+        private static Dictionary<string, string> BuildParams(string userName, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
             var result = new Dictionary<string, string>();
 
@@ -126,19 +126,19 @@ namespace BggSharp.Clients
                 result.Add("id", itemId.ToString());
             }
 
-            if (!string.IsNullOrWhiteSpace(username))
+            if (!string.IsNullOrWhiteSpace(userName))
             {
-                result.Add("username", username);
+                result.Add("username", userName);
             }
 
             if (startDate.HasValue)
             {
-                result.Add("mindate", startDate.Value.ToString("yyyy-MM-dd"));
+                result.Add("mindate", startDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             }
 
             if (endDate.HasValue)
             {
-                result.Add("mindate", endDate.Value.ToString("yyyy-MM-dd"));
+                result.Add("mindate", endDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             }
 
             if (type.HasValue)
@@ -153,7 +153,7 @@ namespace BggSharp.Clients
 
             if (page > 1)
             {
-                result.Add("page", page.ToString());
+                result.Add("page", page.ToString(CultureInfo.InvariantCulture));
             }
 
             return result.Any() ? result : null;

@@ -7,6 +7,6 @@ namespace BggSharp.Http
     public interface IApiConnection
     {
         Task<T> Get<T>(Uri relativeUri) where T : new();
-        Task<T> Get<T>(Uri relativeUri, IDictionary<string, string> requestParams) where T : new();
+        Task<T> Get<T>(Uri relativeUri, IDictionary<string, string> requestParameters) where T : new();
     }
 }

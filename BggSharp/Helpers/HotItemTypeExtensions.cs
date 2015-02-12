@@ -9,17 +9,17 @@ namespace BggSharp.Helpers
         {
             switch (type)
             {
-                case HotItemType.Boardgame:
+                case HotItemType.BoardGame:
                     return "boardgame";
                 case HotItemType.Rpg:
                     return "rpg";
                 case HotItemType.Videogame:
                     return "videogame";
-                case HotItemType.BoardgamePerson:
+                case HotItemType.BoardGamePerson:
                     return "boardgameperson";
                 case HotItemType.RpgPerson:
                     return "rpgperson";
-                case HotItemType.BoardgameCompany:
+                case HotItemType.BoardGameCompany:
                     return "boardgamecompany";
                 case HotItemType.RpgCompany:
                     return "rpgcompany";

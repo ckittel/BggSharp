@@ -1,0 +1,14 @@
+﻿<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>Api</Word>
+      <Word>Bgg</Word>
+      <Word>Rpg</Word>
+    </Recognized>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>Poco</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

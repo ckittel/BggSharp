@@ -2,12 +2,12 @@ namespace BggSharp.Models
 {
     public enum HotItemType
     {
-        Boardgame,
+        BoardGame,
         Rpg,
         Videogame,
-        BoardgamePerson,
+        BoardGamePerson,
         RpgPerson,
-        BoardgameCompany,
+        BoardGameCompany,
         RpgCompany,
         VideogameCompany
     }

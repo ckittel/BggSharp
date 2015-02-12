@@ -5,6 +5,6 @@
         BoardGame,
         BoardGameExpansion,
         RpgItem,
-        VideoGame
+        Videogame
     }
 }

@@ -4,8 +4,7 @@ namespace BggSharp.Models.HttpResponse.Plays
 {
     public class Item
     {
-        [DeserializeAs(Name = "subtypes")]
-        public ItemSubtypes SubTypes { get; set; }
+        public ItemSubtypes Subtypes { get; set; }
 
         public string Name { get; set; }
 

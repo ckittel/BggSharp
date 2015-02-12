@@ -15,7 +15,7 @@ namespace BggSharp.Helpers
                     return "boardgameexpansion";
                 case PlaySubtype.RpgItem:
                     return "rpgitem";
-                case PlaySubtype.VideoGame:
+                case PlaySubtype.Videogame:
                     return "videogame";
                 default:
                     throw new ArgumentOutOfRangeException("subtype");

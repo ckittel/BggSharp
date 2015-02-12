@@ -5,7 +5,7 @@ namespace BggSharp.Models.HttpResponse.Plays
     public class Player
     {
         [DeserializeAs(Name = "username")]
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
         [DeserializeAs(Name = "userid")]
         public int UserId { get; set; }
