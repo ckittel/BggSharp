@@ -22,6 +22,7 @@ namespace BggSharp.Models
 
         public PlayItem Item { get; set; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Fine for a POCO")]
         public List<PlayPlayer> Players { get; private set; }
     }
 }
