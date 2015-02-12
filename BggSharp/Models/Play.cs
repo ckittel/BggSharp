@@ -8,6 +8,7 @@ namespace BggSharp.Models
         public Play()
         {
             Players = new List<PlayPlayer>();
+            Item = new PlayItem();
         }
 
         public int Id { get; set; }
@@ -20,7 +21,7 @@ namespace BggSharp.Models
         public string Comments { get; set; }
         public bool IsNowInStats { get; set; }
 
-        public PlayItem Item { get; set; }
+        public PlayItem Item { get; private set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Fine for a POCO")]
         public List<PlayPlayer> Players { get; private set; }

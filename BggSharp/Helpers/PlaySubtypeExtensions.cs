@@ -21,5 +21,30 @@ namespace BggSharp.Helpers
                     throw new ArgumentOutOfRangeException("subtype");
             }
         }
+
+        public static PlaySubtype FromApiResult(this string subtype)
+        {
+            if (subtype.Equals("boardgame", StringComparison.OrdinalIgnoreCase))
+            {
+                return PlaySubtype.BoardGame;
+            }
+
+            if (subtype.Equals("boardgameexpansion", StringComparison.OrdinalIgnoreCase))
+            {
+                return PlaySubtype.BoardGameExpansion;
+            }
+
+            if (subtype.Equals("rpgitem", StringComparison.OrdinalIgnoreCase))
+            {
+                return PlaySubtype.RpgItem;
+            }
+
+            if (subtype.Equals("videogame", StringComparison.OrdinalIgnoreCase))
+            {
+                return PlaySubtype.Videogame;
+            }
+
+            throw new ArgumentException("subtype was not one of the expected strings", "subtype");
+        }
     }
 }

@@ -17,5 +17,20 @@ namespace BggSharp.Helpers
                     throw new ArgumentOutOfRangeException("type");
             }
         }
+
+        public static PlayType FromApiValue(this string value)
+        {
+            if (value.Equals("thing", StringComparison.OrdinalIgnoreCase))
+            {
+                return PlayType.Thing;
+            }
+
+            if (value.Equals("family", StringComparison.OrdinalIgnoreCase))
+            {
+                return PlayType.Family;
+            }
+
+            throw new ArgumentException("value was not one of the expected strings", "value");
+        }
     }
 }

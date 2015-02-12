@@ -54,6 +54,7 @@
     <Compile Include="Clients\PlaysClient.cs" />
     <Compile Include="Helpers\MapperExtensions\HotItemsResponseExtensions.cs" />
     <Compile Include="Helpers\HotItemTypeExtensions.cs" />
+    <Compile Include="Helpers\MapperExtensions\PlaysResponseExtensions.cs" />
     <Compile Include="Helpers\PlaySubtypeExtensions.cs" />
     <Compile Include="Helpers\PlayTypeExtensions.cs" />
     <Compile Include="Helpers\RestRequestExtensions.cs" />

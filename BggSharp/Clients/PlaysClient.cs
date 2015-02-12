@@ -5,9 +5,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BggSharp.Helpers;
+using BggSharp.Helpers.MapperExtensions;
 using BggSharp.Http;
 using BggSharp.Models;
 using BggSharp.Models.HttpResponse.Plays;
+using Play = BggSharp.Models.Play;
 
 namespace BggSharp.Clients
 {
@@ -17,7 +19,7 @@ namespace BggSharp.Clients
             base(connection)
         { }
 
-        // TODO: Need to convert to cleaner (non-HttpRepsonse bound) model type
+        // TODO: Need to convert to cleaner (non-HttpRepsonse bound) model type for paged items
         // TODO: ...
         // TODO: Profit?
 
@@ -38,7 +40,7 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(string userName, int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return GetPage(userName, (int?)itemId, startDate, endDate, null, null, page);
+            return GetPage(userName, itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(int itemId, int page)
@@ -48,50 +50,50 @@ namespace BggSharp.Clients
 
         public Task<PlaysResponse> Get(int itemId, DateTime startDate, DateTime endDate, int page)
         {
-            return GetPage(null, (int?)itemId, startDate, endDate, null, null, page);
+            return GetPage(null, itemId, startDate, endDate, null, null, page);
         }
 
         public Task<PlaysResponse> Get(string userName, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype, int page)
         {
-            return GetPage(userName, (int?)itemId, startDate, endDate, type, subtype, page);
+            return GetPage(userName, itemId, startDate, endDate, type, subtype, page);
         }
 
-        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName)
+        public Task<ReadOnlyCollection<Play>> GetAll(string userName)
         {
             return GetAll(userName, null, null, null, null, null);
         }
 
-        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, DateTime startDate, DateTime endDate)
+        public Task<ReadOnlyCollection<Play>> GetAll(string userName, DateTime startDate, DateTime endDate)
         {
             return GetAll(userName, null, startDate, endDate, null, null);
         }
 
-        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int itemId)
+        public Task<ReadOnlyCollection<Play>> GetAll(string userName, int itemId)
         {
             return GetAll(userName, itemId, null, null, null, null);
         }
 
-        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int itemId, DateTime startDate, DateTime endDate)
+        public Task<ReadOnlyCollection<Play>> GetAll(string userName, int itemId, DateTime startDate, DateTime endDate)
         {
             return GetAll(userName, (int?)itemId, startDate, endDate, null, null);
         }
 
-        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(int itemId)
+        public Task<ReadOnlyCollection<Play>> GetAll(int itemId)
         {
             return GetAll(null, itemId, null, null, null, null);
         }
 
-        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(int itemId, DateTime startDate, DateTime endDate)
+        public Task<ReadOnlyCollection<Play>> GetAll(int itemId, DateTime startDate, DateTime endDate)
         {
             return GetAll(null, (int?)itemId, startDate, endDate, null, null);
         }
 
-        public Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype)
+        public Task<ReadOnlyCollection<Play>> GetAll(string userName, int itemId, DateTime startDate, DateTime endDate, PlayType? type, PlaySubtype? subtype)
         {
             return GetAll(userName, (int?)itemId, startDate, endDate, type, subtype);
         }
 
-        private async Task<ReadOnlyCollection<PlaysResponse>> GetAll(string userName, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype)
+        private async Task<ReadOnlyCollection<Play>> GetAll(string userName, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype)
         {
             var result = await GetPage(userName, itemId, startDate, endDate, type, subtype, 1).ConfigureAwait(false);
 
@@ -104,7 +106,7 @@ namespace BggSharp.Clients
             });
 
             // be nice and kick them back in page order
-            return playsResponses.OrderBy(r => r.Page).ToList().AsReadOnly();
+            return playsResponses.ToFlattenedModel().AsReadOnly();
         }
 
         private Task<PlaysResponse> GetPage(string userName, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
@@ -114,7 +116,7 @@ namespace BggSharp.Clients
 
         private static int CalculateTotalNumberOfPages(int totalPlays, int pageSize)
         {
-            return (int)Math.Ceiling(totalPlays / (decimal)pageSize);
+            return (int)Math.Ceiling(totalPlays / (decimal)Math.Max(pageSize, 1));
         }
 
         private static Dictionary<string, string> BuildParams(string userName, int? itemId, DateTime? startDate, DateTime? endDate, PlayType? type, PlaySubtype? subtype, int page)
