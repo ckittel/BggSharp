@@ -75,6 +75,9 @@
     <Compile Include="Models\HttpResponse\Plays\Player.cs" />
     <Compile Include="Models\HttpResponse\Plays\PlayPlayers.cs" />
     <Compile Include="Models\HttpResponse\Plays\PlaysResponse.cs" />
+    <Compile Include="Models\Play.cs" />
+    <Compile Include="Models\PlayItem.cs" />
+    <Compile Include="Models\PlayPlayer.cs" />
     <Compile Include="Models\PlaySubtype.cs" />
     <Compile Include="Models\PlayType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
